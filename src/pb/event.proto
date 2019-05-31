@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package proto;
+
+message Event {
+    string event = 1;
+    string userID = 2;
+    map<string, string> properties = 3;
+}
+
+message Empty {}
+
+service EventService {
+    rpc SendEvent (Event) returns (Empty) {}
+    rpc ReadEvents (Empty) returns (Empty) {}
+}
