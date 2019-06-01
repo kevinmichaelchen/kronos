@@ -8,6 +8,8 @@ This project provides a gRPC API for analytics.
 Its name is a cooler misspelling of the [Greek god of time](https://en.wikipedia.org/wiki/Chronos).  
 
 ### Why might we use this?
+- Analytics are a big part of our workflow.
+  - We have a [JIRA ticket](https://irisvr.atlassian.net/browse/PROS-441) for implementing events on the Quest.
 - Segment is for customer data.
 - Bigtable is probably cheaper than a 3rd party offering.
 
@@ -33,21 +35,7 @@ make
 ```
 go get -u cloud.google.com/go/bigtable/cmd/cbt
 
-# Locate the cbt command.
-# It should install under $GOPATH/bin.
-# If you don't have GOPATH set, it defaults to $HOME/go.
-
-env BIGTABLE_EMULATOR_HOST=localhost:8086 \
-  ~/go/bin/cbt \
-    -project=my-project \
-    -instance=my-instance \
-    createtable mytable
-
-env BIGTABLE_EMULATOR_HOST=localhost:8086 \
-  ~/go/bin/cbt \
-    -project=my-project \
-    -instance=my-instance \
-    createfamily mytable event
+make build-tables
 ```
 
 ### Hitting the gRPC API

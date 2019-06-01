@@ -10,6 +10,8 @@ SRC_DIR := ./src
 
 # App env vars
 BIGTABLE_EMULATOR_HOST ?= 127.0.0.1:8086
+BIGTABLE_PROJECT ?= my-project
+BIGTABLE_INSTANCE ?= my-instance
 NUCLEUS_LOG_WITH_FIELDS ?= false
 LOG_FORMAT ?= text
 LOG_LEVEL ?= 4
@@ -33,5 +35,20 @@ run:
 	  LOG_FORMAT=${LOG_FORMAT} \
 	  LOG_LEVEL=${LOG_LEVEL} \
 	  ./bin/app
+
+.PHONY: build-tables
+build-tables:
+	env \
+	  BIGTABLE_EMULATOR_HOST=${BIGTABLE_EMULATOR_HOST} \
+	  ~/go/bin/cbt \
+	  -project=${BIGTABLE_PROJECT} \
+	  -instance=${BIGTABLE_INSTANCE} \
+	  createtable mytable
+	env \
+	  BIGTABLE_EMULATOR_HOST=${BIGTABLE_EMULATOR_HOST} \
+	  ~/go/bin/cbt \
+	  -project=${BIGTABLE_PROJECT} \
+	  -instance=${BIGTABLE_INSTANCE} \
+	  createfamily mytable event
 
 include makefiles/*.mk

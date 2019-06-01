@@ -52,12 +52,15 @@ Sometimes, we have to the same data more than once to facilitate different queri
 ## Common queries
 Here are some ideas for row key, and what query they'd be useful for.
 
-| Query (find all... `X`)                               | Row key                             | Hotspot Risk |
-| ----------------------------------------------------- |:-----------------------------------:|:------------:|
-| ... events for Alice in March                         | `userID#epochMS`                    | no           |
-| ... events for a device in March                      | `deviceID#epochMS`                  | no           |
-| ... of Alice's logins in March                        | `userID#eventType#epochMS`          | no           |
-| ... of Alice's logins on a particular device in March | `userID#eventType#deviceID#epochMS` | no           |
-| ... times file X was launched in March                | `fileID#eventType#epochMS`          | no           |
+| Query (find ...)                                      | Row key                             |
+| ----------------------------------------------------- |:-----------------------------------:|
+| all events for Alice in March                         | `userID#epochMS`                    |
+| all events for a device in March                      | `deviceID#epochMS`                  |
+| all of Alice's logins in March                        | `userID#eventType#epochMS`          |
+| all of Alice's logins on a particular device in March | `userID#eventType#deviceID#epochMS` |
+| all times file X was launched in March                | `fileID#eventType#epochMS`          |
+| number of logins in last day/week/month               | `eventType#epochMS`                 |
+| how long Alice spent in VR in last day/week           | ? |
+| how long all users spent in VR in last day/week       | ? |
 
 We only have a few event types, e.g., `login`, `logout`, `file-launched`, `file-closed`.
