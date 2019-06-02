@@ -76,3 +76,7 @@ The heartbeat approach is probably on the right track though.
 Whether connected or disconnected, the client periodically writes heartbeats to a heartbeat file.
 The client then sends the heartbeat events when connected.
 Thus, we can use the row key `userID#eventType#epochMS` to find Alice's time in VR.
+
+Not only do heartbeat events make answering this query easier,
+but if we didn't use heartbeats, then disconnected logout wouldn't be possible,
+and the logout network call would have to be retried until successful.
