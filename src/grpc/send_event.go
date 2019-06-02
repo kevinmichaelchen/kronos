@@ -6,45 +6,61 @@ import (
 	"fmt"
 	proto "github.com/IrisVR/kronos/pb"
 	log "github.com/sirupsen/logrus"
+	"strconv"
 	"time"
 )
 
 const (
-	tableName = "mytable"
+	loginTable      = "logins"
+	heartbeatsTable = "heartbeats"
 )
 
-func getTime(in *proto.Event) time.Time {
-	epochMs := in.Time
+func (s *Server) SendHeartbeatEvent(ctx context.Context, in *proto.Event) (*proto.Empty, error) {
+	if err := s.writeEvent(ctx, heartbeatsTable, in); err != nil {
+		return nil, err
+	}
+
+	log.Infof("Processed a heartbeat event")
+
+	return &proto.Empty{}, nil
+}
+
+func (s *Server) SendLoginEvent(ctx context.Context, in *proto.Event) (*proto.Empty, error) {
+	if err := s.writeEvent(ctx, loginTable, in); err != nil {
+		return nil, err
+	}
+
+	log.Infof("Processed a login event")
+
+	return &proto.Empty{}, nil
+}
+
+func (s *Server) writeEvent(ctx context.Context, tableName string, in *proto.Event) error {
+	client := s.DatabaseClient
+	tbl := client.Open(tableName)
+
+	eventTime := getTime(in.TimeMs)
+	rowKey := getLoginRowKey(in.UserID, in.TimeMs)
+	columnFamily := in.UserID
+	columnName := "value"
+
+	mut := bigtable.NewMutation()
+	mut.Set(columnFamily, columnName, bigtable.Time(eventTime), []byte("1"))
+	return tbl.Apply(ctx, rowKey, mut)
+}
+
+func getTime(epochMs int64) time.Time {
 	s := epochMs / 1000
 	ns := (epochMs % 1000) * 1000000
 	return time.Unix(s, ns)
 }
 
-func getRowKeyFromEvent(ctx context.Context, in *proto.Event, now time.Time) string {
-	return fmt.Sprintf("%s#%d", in.Event, now.UnixNano()/1000000)
+func reverseTimestamp(epochMs int64) string {
+	// TODO actually reverse it.
+	//  for now we don't care about hotspotting
+	return strconv.Itoa(int(epochMs))
 }
 
-func (s *Server) SendEvent(ctx context.Context, in *proto.Event) (*proto.Empty, error) {
-	client := s.DatabaseClient
-	tbl := client.Open(tableName)
-
-	// TODO normalize events? check that they're part of a set of known event types
-
-	now := time.Now()
-	// TODO an event might need several row keys since we save the same event in a few different ways
-	//  to satisfy various queries.
-	rowKey := getRowKeyFromEvent(ctx, in, now)
-	columnFamily := "event"
-	columnName := "value"
-
-	mut := bigtable.NewMutation()
-	mut.Set(columnFamily, columnName, bigtable.Time(now), []byte("1"))
-	err := tbl.Apply(ctx, rowKey, mut)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Infof("Processed a %s event", in.Event)
-
-	return &proto.Empty{}, nil
+func getLoginRowKey(userID string, epochMS int64) string {
+	return fmt.Sprintf("%s:%s", userID, reverseTimestamp(epochMS))
 }

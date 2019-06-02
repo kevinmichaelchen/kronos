@@ -3,15 +3,38 @@ syntax = "proto3";
 package proto;
 
 message Event {
-    string event = 1;
-    string userID = 2;
-    int64 time = 3;
-    map<string, string> properties = 4;
+    string userID = 1;
+    int64 timeMs = 2;
+    map<string, string> properties = 3;
 }
 
 message Empty {}
 
+message UserQuery {
+    string userID = 1;
+    int64 start = 2;
+    int64 end = 3;
+}
+
+message DurationResponse {
+    int64 durationMs = 1;
+}
+
+message CountResponse {
+    int64 count = 1;
+}
+
+// TODO how do we prevent malicious clients from fabricating analytics by sending their own events?
 service EventService {
-    rpc SendEvent (Event) returns (Empty) {}
+    rpc SendLoginEvent (Event) returns (Empty) {}
+
+    rpc SendHeartbeatEvent (Event) returns (Empty) {}
+
+    // Read all events
     rpc ReadEvents (Empty) returns (Empty) {}
+
+    rpc GetNumberOfLogins (UserQuery) returns (CountResponse) {}
+
+    // Find out how long Alice was in VR between X and Y.
+    rpc GetUserSessionDuration (UserQuery) returns (DurationResponse) {}
 }

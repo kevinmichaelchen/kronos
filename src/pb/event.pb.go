@@ -25,10 +25,9 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Event struct {
-	Event                string            `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
-	UserID               string            `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	Time                 int64             `protobuf:"varint,3,opt,name=time,proto3" json:"time,omitempty"`
-	Properties           map[string]string `protobuf:"bytes,4,rep,name=properties,proto3" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	UserID               string            `protobuf:"bytes,1,opt,name=userID,proto3" json:"userID,omitempty"`
+	TimeMs               int64             `protobuf:"varint,2,opt,name=timeMs,proto3" json:"timeMs,omitempty"`
+	Properties           map[string]string `protobuf:"bytes,3,rep,name=properties,proto3" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
 	XXX_unrecognized     []byte            `json:"-"`
 	XXX_sizecache        int32             `json:"-"`
@@ -59,13 +58,6 @@ func (m *Event) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Event proto.InternalMessageInfo
 
-func (m *Event) GetEvent() string {
-	if m != nil {
-		return m.Event
-	}
-	return ""
-}
-
 func (m *Event) GetUserID() string {
 	if m != nil {
 		return m.UserID
@@ -73,9 +65,9 @@ func (m *Event) GetUserID() string {
 	return ""
 }
 
-func (m *Event) GetTime() int64 {
+func (m *Event) GetTimeMs() int64 {
 	if m != nil {
-		return m.Time
+		return m.TimeMs
 	}
 	return 0
 }
@@ -118,31 +110,176 @@ func (m *Empty) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Empty proto.InternalMessageInfo
 
+type UserQuery struct {
+	UserID               string   `protobuf:"bytes,1,opt,name=userID,proto3" json:"userID,omitempty"`
+	Start                int64    `protobuf:"varint,2,opt,name=start,proto3" json:"start,omitempty"`
+	End                  int64    `protobuf:"varint,3,opt,name=end,proto3" json:"end,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UserQuery) Reset()         { *m = UserQuery{} }
+func (m *UserQuery) String() string { return proto.CompactTextString(m) }
+func (*UserQuery) ProtoMessage()    {}
+func (*UserQuery) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2d17a9d3f0ddf27e, []int{2}
+}
+
+func (m *UserQuery) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UserQuery.Unmarshal(m, b)
+}
+func (m *UserQuery) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UserQuery.Marshal(b, m, deterministic)
+}
+func (m *UserQuery) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UserQuery.Merge(m, src)
+}
+func (m *UserQuery) XXX_Size() int {
+	return xxx_messageInfo_UserQuery.Size(m)
+}
+func (m *UserQuery) XXX_DiscardUnknown() {
+	xxx_messageInfo_UserQuery.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UserQuery proto.InternalMessageInfo
+
+func (m *UserQuery) GetUserID() string {
+	if m != nil {
+		return m.UserID
+	}
+	return ""
+}
+
+func (m *UserQuery) GetStart() int64 {
+	if m != nil {
+		return m.Start
+	}
+	return 0
+}
+
+func (m *UserQuery) GetEnd() int64 {
+	if m != nil {
+		return m.End
+	}
+	return 0
+}
+
+type DurationResponse struct {
+	DurationMs           int64    `protobuf:"varint,1,opt,name=durationMs,proto3" json:"durationMs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DurationResponse) Reset()         { *m = DurationResponse{} }
+func (m *DurationResponse) String() string { return proto.CompactTextString(m) }
+func (*DurationResponse) ProtoMessage()    {}
+func (*DurationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2d17a9d3f0ddf27e, []int{3}
+}
+
+func (m *DurationResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DurationResponse.Unmarshal(m, b)
+}
+func (m *DurationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DurationResponse.Marshal(b, m, deterministic)
+}
+func (m *DurationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DurationResponse.Merge(m, src)
+}
+func (m *DurationResponse) XXX_Size() int {
+	return xxx_messageInfo_DurationResponse.Size(m)
+}
+func (m *DurationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DurationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DurationResponse proto.InternalMessageInfo
+
+func (m *DurationResponse) GetDurationMs() int64 {
+	if m != nil {
+		return m.DurationMs
+	}
+	return 0
+}
+
+type CountResponse struct {
+	Count                int64    `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CountResponse) Reset()         { *m = CountResponse{} }
+func (m *CountResponse) String() string { return proto.CompactTextString(m) }
+func (*CountResponse) ProtoMessage()    {}
+func (*CountResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2d17a9d3f0ddf27e, []int{4}
+}
+
+func (m *CountResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CountResponse.Unmarshal(m, b)
+}
+func (m *CountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CountResponse.Marshal(b, m, deterministic)
+}
+func (m *CountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CountResponse.Merge(m, src)
+}
+func (m *CountResponse) XXX_Size() int {
+	return xxx_messageInfo_CountResponse.Size(m)
+}
+func (m *CountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CountResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CountResponse proto.InternalMessageInfo
+
+func (m *CountResponse) GetCount() int64 {
+	if m != nil {
+		return m.Count
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*Event)(nil), "proto.Event")
 	proto.RegisterMapType((map[string]string)(nil), "proto.Event.PropertiesEntry")
 	proto.RegisterType((*Empty)(nil), "proto.Empty")
+	proto.RegisterType((*UserQuery)(nil), "proto.UserQuery")
+	proto.RegisterType((*DurationResponse)(nil), "proto.DurationResponse")
+	proto.RegisterType((*CountResponse)(nil), "proto.CountResponse")
 }
 
 func init() { proto.RegisterFile("event.proto", fileDescriptor_2d17a9d3f0ddf27e) }
 
 var fileDescriptor_2d17a9d3f0ddf27e = []byte{
-	// 229 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x5c, 0x8f, 0x41, 0x4b, 0xc4, 0x30,
-	0x10, 0x85, 0xcd, 0x66, 0xb3, 0xb2, 0xb3, 0x0b, 0xca, 0x20, 0x12, 0x16, 0x0f, 0xa5, 0xa7, 0xea,
-	0xa1, 0x87, 0x7a, 0x11, 0xd1, 0x9b, 0x3d, 0x78, 0x93, 0xf4, 0x17, 0x54, 0x9d, 0x43, 0xd1, 0xb6,
-	0x21, 0x4d, 0x0b, 0xfd, 0x83, 0xfe, 0x2e, 0x49, 0x52, 0x4a, 0xb7, 0xa7, 0xcc, 0x37, 0xef, 0x85,
-	0xf7, 0x06, 0x0e, 0x34, 0x50, 0x63, 0x53, 0x6d, 0x5a, 0xdb, 0xa2, 0xf0, 0x4f, 0xfc, 0xc7, 0x40,
-	0xe4, 0x6e, 0x8d, 0x37, 0x20, 0xbc, 0x2e, 0x59, 0xc4, 0x92, 0xbd, 0x0a, 0x80, 0xb7, 0xb0, 0xeb,
-	0x3b, 0x32, 0xef, 0x6f, 0x72, 0xe3, 0xd7, 0x13, 0x21, 0xc2, 0xd6, 0x56, 0x35, 0x49, 0x1e, 0xb1,
-	0x84, 0x2b, 0x3f, 0xe3, 0x0b, 0x80, 0x36, 0xad, 0x26, 0x63, 0x2b, 0xea, 0xe4, 0x36, 0xe2, 0xc9,
-	0x21, 0xbb, 0x0b, 0x71, 0xa9, 0xcf, 0x48, 0x3f, 0x66, 0x39, 0x6f, 0xac, 0x19, 0xd5, 0xc2, 0x7f,
-	0x7a, 0x85, 0xab, 0x95, 0x8c, 0xd7, 0xc0, 0x7f, 0x68, 0x9c, 0x0a, 0xb9, 0xd1, 0x95, 0x1c, 0xca,
-	0xdf, 0x9e, 0xa6, 0x36, 0x01, 0x9e, 0x37, 0x4f, 0x2c, 0xbe, 0x04, 0x91, 0xd7, 0xda, 0x8e, 0x19,
-	0xc1, 0xd1, 0x87, 0x15, 0x64, 0x86, 0xea, 0x8b, 0xf0, 0x1e, 0xf6, 0x05, 0x35, 0xdf, 0xe1, 0xc8,
-	0xe3, 0xb2, 0xce, 0x69, 0x26, 0xf7, 0x31, 0xbe, 0xc0, 0x07, 0x00, 0x45, 0x65, 0xb0, 0x76, 0x78,
-	0xa6, 0xae, 0xbd, 0x9f, 0x3b, 0x8f, 0x8f, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff, 0x28, 0x3f, 0x42,
-	0x6d, 0x55, 0x01, 0x00, 0x00,
+	// 371 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x51, 0xcd, 0x4a, 0xeb, 0x40,
+	0x14, 0x6e, 0x1a, 0xd2, 0x4b, 0x4f, 0x7b, 0xef, 0xad, 0x43, 0xa8, 0xa1, 0x88, 0x94, 0x80, 0x50,
+	0x5c, 0x64, 0x11, 0x37, 0x22, 0x76, 0x65, 0x43, 0x15, 0xad, 0x3f, 0x29, 0x3e, 0x40, 0xda, 0x1c,
+	0x25, 0x68, 0x67, 0xc2, 0xcc, 0xa4, 0x90, 0xf7, 0xf1, 0x11, 0x7c, 0x40, 0x99, 0xc9, 0x18, 0xda,
+	0xaa, 0xe0, 0x2a, 0xf3, 0xfd, 0xcc, 0x39, 0xf9, 0xbe, 0x81, 0x0e, 0xae, 0x91, 0xca, 0x20, 0xe7,
+	0x4c, 0x32, 0xe2, 0xe8, 0x8f, 0xff, 0x6e, 0x81, 0x13, 0x29, 0x9a, 0xf4, 0xa1, 0x55, 0x08, 0xe4,
+	0x57, 0x13, 0xcf, 0x1a, 0x5a, 0xa3, 0x76, 0x6c, 0x90, 0xe2, 0x65, 0xb6, 0xc2, 0x99, 0xf0, 0x9a,
+	0x43, 0x6b, 0x64, 0xc7, 0x06, 0x91, 0x73, 0x80, 0x9c, 0xb3, 0x1c, 0xb9, 0xcc, 0x50, 0x78, 0xf6,
+	0xd0, 0x1e, 0x75, 0xc2, 0x83, 0x6a, 0x78, 0xa0, 0x27, 0x06, 0xf7, 0xb5, 0x1c, 0x51, 0xc9, 0xcb,
+	0x78, 0xc3, 0x3f, 0x18, 0xc3, 0xff, 0x1d, 0x99, 0xf4, 0xc0, 0x7e, 0xc1, 0xd2, 0x6c, 0x57, 0x47,
+	0xe2, 0x82, 0xb3, 0x4e, 0x5e, 0x0b, 0xd4, 0x9b, 0xdb, 0x71, 0x05, 0xce, 0x9a, 0xa7, 0x96, 0xff,
+	0x07, 0x9c, 0x68, 0x95, 0xcb, 0xd2, 0xbf, 0x86, 0xf6, 0xa3, 0x40, 0xfe, 0x50, 0x20, 0x2f, 0x7f,
+	0x8c, 0xe0, 0x82, 0x23, 0x64, 0xc2, 0xa5, 0x49, 0x50, 0x01, 0xb5, 0x0f, 0x69, 0xea, 0xd9, 0x9a,
+	0x53, 0x47, 0x3f, 0x84, 0xde, 0xa4, 0xe0, 0x89, 0xcc, 0x18, 0x8d, 0x51, 0xe4, 0x8c, 0x0a, 0x24,
+	0x87, 0x00, 0xa9, 0xe1, 0x66, 0x42, 0xcf, 0xb5, 0xe3, 0x0d, 0xc6, 0x3f, 0x82, 0xbf, 0x17, 0xac,
+	0xa0, 0xb2, 0xbe, 0xe0, 0x82, 0xb3, 0x54, 0x84, 0xf1, 0x56, 0x20, 0x7c, 0x6b, 0x42, 0x57, 0xb7,
+	0x32, 0x47, 0xbe, 0xce, 0x96, 0x48, 0x02, 0xf8, 0x37, 0x47, 0x9a, 0xde, 0xb0, 0xe7, 0x8c, 0x56,
+	0x0f, 0xd0, 0xdd, 0x2c, 0x6f, 0x50, 0x23, 0x1d, 0xb3, 0x41, 0x42, 0x20, 0xca, 0x7f, 0x89, 0x09,
+	0x97, 0x0b, 0x4c, 0xe4, 0x6f, 0xee, 0x1c, 0x03, 0xc4, 0x98, 0xa4, 0x5a, 0x14, 0x64, 0x4b, 0xfd,
+	0xe2, 0x1d, 0xc3, 0xde, 0x14, 0xe5, 0x6d, 0xb1, 0x5a, 0x20, 0xbf, 0x7b, 0xd2, 0xbf, 0x25, 0x48,
+	0xcf, 0x98, 0xea, 0x8a, 0x07, 0xae, 0x61, 0xb6, 0x32, 0xfb, 0x0d, 0x12, 0x41, 0x7f, 0x8a, 0x52,
+	0xf9, 0xe6, 0x28, 0x44, 0xc6, 0xe8, 0x67, 0x91, 0xdf, 0xcc, 0xd8, 0x37, 0xcc, 0x6e, 0xd7, 0x7e,
+	0x63, 0xd1, 0xd2, 0xca, 0xc9, 0x47, 0x00, 0x00, 0x00, 0xff, 0xff, 0xc6, 0x73, 0x9b, 0x45, 0xab,
+	0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -157,8 +294,13 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type EventServiceClient interface {
-	SendEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Empty, error)
+	SendLoginEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Empty, error)
+	SendHeartbeatEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Empty, error)
+	// Read all events
 	ReadEvents(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
+	GetNumberOfLogins(ctx context.Context, in *UserQuery, opts ...grpc.CallOption) (*CountResponse, error)
+	// Find out how long Alice was in VR between X and Y.
+	GetUserSessionDuration(ctx context.Context, in *UserQuery, opts ...grpc.CallOption) (*DurationResponse, error)
 }
 
 type eventServiceClient struct {
@@ -169,9 +311,18 @@ func NewEventServiceClient(cc *grpc.ClientConn) EventServiceClient {
 	return &eventServiceClient{cc}
 }
 
-func (c *eventServiceClient) SendEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Empty, error) {
+func (c *eventServiceClient) SendLoginEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/proto.EventService/SendEvent", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.EventService/SendLoginEvent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *eventServiceClient) SendHeartbeatEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/proto.EventService/SendHeartbeatEvent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -187,41 +338,91 @@ func (c *eventServiceClient) ReadEvents(ctx context.Context, in *Empty, opts ...
 	return out, nil
 }
 
+func (c *eventServiceClient) GetNumberOfLogins(ctx context.Context, in *UserQuery, opts ...grpc.CallOption) (*CountResponse, error) {
+	out := new(CountResponse)
+	err := c.cc.Invoke(ctx, "/proto.EventService/GetNumberOfLogins", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *eventServiceClient) GetUserSessionDuration(ctx context.Context, in *UserQuery, opts ...grpc.CallOption) (*DurationResponse, error) {
+	out := new(DurationResponse)
+	err := c.cc.Invoke(ctx, "/proto.EventService/GetUserSessionDuration", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EventServiceServer is the server API for EventService service.
 type EventServiceServer interface {
-	SendEvent(context.Context, *Event) (*Empty, error)
+	SendLoginEvent(context.Context, *Event) (*Empty, error)
+	SendHeartbeatEvent(context.Context, *Event) (*Empty, error)
+	// Read all events
 	ReadEvents(context.Context, *Empty) (*Empty, error)
+	GetNumberOfLogins(context.Context, *UserQuery) (*CountResponse, error)
+	// Find out how long Alice was in VR between X and Y.
+	GetUserSessionDuration(context.Context, *UserQuery) (*DurationResponse, error)
 }
 
 // UnimplementedEventServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedEventServiceServer struct {
 }
 
-func (*UnimplementedEventServiceServer) SendEvent(ctx context.Context, req *Event) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendEvent not implemented")
+func (*UnimplementedEventServiceServer) SendLoginEvent(ctx context.Context, req *Event) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendLoginEvent not implemented")
+}
+func (*UnimplementedEventServiceServer) SendHeartbeatEvent(ctx context.Context, req *Event) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendHeartbeatEvent not implemented")
 }
 func (*UnimplementedEventServiceServer) ReadEvents(ctx context.Context, req *Empty) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadEvents not implemented")
+}
+func (*UnimplementedEventServiceServer) GetNumberOfLogins(ctx context.Context, req *UserQuery) (*CountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNumberOfLogins not implemented")
+}
+func (*UnimplementedEventServiceServer) GetUserSessionDuration(ctx context.Context, req *UserQuery) (*DurationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserSessionDuration not implemented")
 }
 
 func RegisterEventServiceServer(s *grpc.Server, srv EventServiceServer) {
 	s.RegisterService(&_EventService_serviceDesc, srv)
 }
 
-func _EventService_SendEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _EventService_SendLoginEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Event)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EventServiceServer).SendEvent(ctx, in)
+		return srv.(EventServiceServer).SendLoginEvent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.EventService/SendEvent",
+		FullMethod: "/proto.EventService/SendLoginEvent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EventServiceServer).SendEvent(ctx, req.(*Event))
+		return srv.(EventServiceServer).SendLoginEvent(ctx, req.(*Event))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EventService_SendHeartbeatEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Event)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventServiceServer).SendHeartbeatEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.EventService/SendHeartbeatEvent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventServiceServer).SendHeartbeatEvent(ctx, req.(*Event))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -244,17 +445,65 @@ func _EventService_ReadEvents_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EventService_GetNumberOfLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventServiceServer).GetNumberOfLogins(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.EventService/GetNumberOfLogins",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventServiceServer).GetNumberOfLogins(ctx, req.(*UserQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EventService_GetUserSessionDuration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventServiceServer).GetUserSessionDuration(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.EventService/GetUserSessionDuration",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventServiceServer).GetUserSessionDuration(ctx, req.(*UserQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _EventService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.EventService",
 	HandlerType: (*EventServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SendEvent",
-			Handler:    _EventService_SendEvent_Handler,
+			MethodName: "SendLoginEvent",
+			Handler:    _EventService_SendLoginEvent_Handler,
+		},
+		{
+			MethodName: "SendHeartbeatEvent",
+			Handler:    _EventService_SendHeartbeatEvent_Handler,
 		},
 		{
 			MethodName: "ReadEvents",
 			Handler:    _EventService_ReadEvents_Handler,
+		},
+		{
+			MethodName: "GetNumberOfLogins",
+			Handler:    _EventService_GetNumberOfLogins_Handler,
+		},
+		{
+			MethodName: "GetUserSessionDuration",
+			Handler:    _EventService_GetUserSessionDuration_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

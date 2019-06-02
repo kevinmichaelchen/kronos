@@ -52,31 +52,17 @@ Sometimes, we have to the same data more than once to facilitate different queri
 ## Common queries
 Here are some ideas for row key, and what query they'd be useful for.
 
-| Query (find ...)                                      | Row key                             |
-| ----------------------------------------------------- |:-----------------------------------:|
-| all events for Alice in March                         | `userID#epochMS`                    |
-| all events for a device in March                      | `deviceID#epochMS`                  |
-| all of Alice's logins in March                        | `userID#eventType#epochMS`          |
-| all of Alice's logins on a particular device in March | `userID#eventType#deviceID#epochMS` |
-| all times file X was launched in March                | `fileID#eventType#epochMS`          |
-| number of logins in last day/week/month               | `eventType#epochMS`                 |
-| how long Alice spent in VR in last day/week           | `userID#eventType#epochMS`          |
-| how long all users spent in VR in last day/week       | `userID#eventType#epochMS`          |
+| Query (find ...)                                      | Table           | Row key                   | Column Family |
+| ----------------------------------------------------- |:---------------:|--------------------------:|:-------------:|
+| all of Alice's logins in March                        | `logins`        | `userID:epochMS`          | `userID`      |
+| all of Alice's logins on a particular device in March | `logins`        | `userID:deviceID:epochMS` | `userID`      |
+| number of logins in last day/week/month               | `logins`        | scan all and count        | N/A           |
+| how long Alice spent in VR in last day/week           | `heartbeats`    | `userID:epochMS`          | `userID`      |
+| how long all users spent in VR in last day/week       | `heartbeats`    | scan all and count        | N/A           |
+| all times file X was launched in March                | `file-launches` | `fileID:userID:epochMS`   | `fileID`      |
 
-We only have a few event types, e.g., `login`, `logout`, `file-launched`, `file-closed`.
-
-To figure out how long Alice spent in VR in last day/week, we can maybe use a column family of the event type,
-and maybe use a reverse timestamp (so most recent events come first). For this to work, logout would need to be
-disabled for connectivity...
-
-Or we can have clients send a heartbeat every 5 seconds. That way, getting a duration is boiled down
-to summing a count of heartbeats and multiplying by 5. This only works if client device is connected though...
-
-The heartbeat approach is probably on the right track though.
+### Why heartbeats?
 Whether connected or disconnected, the client periodically writes heartbeats to a heartbeat file.
 The client then sends the heartbeat events when connected.
-Thus, we can use the row key `userID#eventType#epochMS` to find Alice's time in VR.
 
-Not only do heartbeat events make answering this query easier,
-but if we didn't use heartbeats, then disconnected logout wouldn't be possible,
-and the logout network call would have to be retried until successful.
+If we didn't use this approach, then logging out would require a resilient network call.

@@ -8,9 +8,16 @@ import (
 )
 
 func (s *Server) ReadEvents(ctx context.Context, in *proto.Empty) (*proto.Empty, error) {
-	client := s.DatabaseClient
-	tbl := client.Open(tableName)
+	if err := s.readAllRows(ctx, loginTable); err != nil {
+		return nil, err
+	}
 
+	return &proto.Empty{}, nil
+}
+
+func (s *Server) readAllRows(ctx context.Context, tblName string) error {
+	client := s.DatabaseClient
+	tbl := client.Open(tblName)
 	rowRange := bigtable.PrefixRange("")
 
 	var rowCount int
@@ -48,10 +55,9 @@ func (s *Server) ReadEvents(ctx context.Context, in *proto.Empty) (*proto.Empty,
 		return true // keep going
 	}, readOpts...)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	log.Infof("Found %d rows", rowCount)
-
-	return &proto.Empty{}, nil
+	log.Infof("Found %d rows in table: %s", rowCount, tblName)
+	return nil
 }
