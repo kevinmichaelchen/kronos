@@ -13,6 +13,13 @@ const (
 	tableName = "mytable"
 )
 
+func getTime(in *proto.Event) time.Time {
+	epochMs := in.Time
+	s := epochMs / 1000
+	ns := (epochMs % 1000) * 1000000
+	return time.Unix(s, ns)
+}
+
 func getRowKeyFromEvent(ctx context.Context, in *proto.Event, now time.Time) string {
 	return fmt.Sprintf("%s#%d", in.Event, now.UnixNano()/1000000)
 }

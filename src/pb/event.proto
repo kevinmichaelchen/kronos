@@ -5,7 +5,8 @@ package proto;
 message Event {
     string event = 1;
     string userID = 2;
-    map<string, string> properties = 3;
+    int64 time = 3;
+    map<string, string> properties = 4;
 }
 
 message Empty {}

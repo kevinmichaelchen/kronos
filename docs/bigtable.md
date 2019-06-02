@@ -60,7 +60,19 @@ Here are some ideas for row key, and what query they'd be useful for.
 | all of Alice's logins on a particular device in March | `userID#eventType#deviceID#epochMS` |
 | all times file X was launched in March                | `fileID#eventType#epochMS`          |
 | number of logins in last day/week/month               | `eventType#epochMS`                 |
-| how long Alice spent in VR in last day/week           | ? |
-| how long all users spent in VR in last day/week       | ? |
+| how long Alice spent in VR in last day/week           | `userID#eventType#epochMS`          |
+| how long all users spent in VR in last day/week       | `userID#eventType#epochMS`          |
 
 We only have a few event types, e.g., `login`, `logout`, `file-launched`, `file-closed`.
+
+To figure out how long Alice spent in VR in last day/week, we can maybe use a column family of the event type,
+and maybe use a reverse timestamp (so most recent events come first). For this to work, logout would need to be
+disabled for connectivity...
+
+Or we can have clients send a heartbeat every 5 seconds. That way, getting a duration is boiled down
+to summing a count of heartbeats and multiplying by 5. This only works if client device is connected though...
+
+The heartbeat approach is probably on the right track though.
+Whether connected or disconnected, the client periodically writes heartbeats to a heartbeat file.
+The client then sends the heartbeat events when connected.
+Thus, we can use the row key `userID#eventType#epochMS` to find Alice's time in VR.
