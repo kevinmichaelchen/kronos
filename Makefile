@@ -50,11 +50,5 @@ build-tables:
 	  -project=${BIGTABLE_PROJECT} \
 	  -instance=${BIGTABLE_INSTANCE} \
 	  createtable heartbeats
-	env \
-	  BIGTABLE_EMULATOR_HOST=${BIGTABLE_EMULATOR_HOST} \
-	  ~/go/bin/cbt \
-	  -project=${BIGTABLE_PROJECT} \
-	  -instance=${BIGTABLE_INSTANCE} \
-	  createfamily logins f78002f4-873d-4e79-bf13-0453c4951312
 
 include makefiles/*.mk

@@ -1,35 +1,48 @@
-package main
+package _tests
 
 import (
 	"context"
+	"fmt"
 	"github.com/IrisVR/kronos/app"
 	"github.com/IrisVR/kronos/configuration"
 	"github.com/IrisVR/kronos/db"
 	log "github.com/sirupsen/logrus"
+	"os"
 	"sync"
+	"testing"
 )
 
-func main() {
-	config := configuration.LoadConfig()
+var testConfig configuration.Config
+var serverAddress string
+
+func TestMain(m *testing.M) {
+	testConfig = configuration.LoadConfig()
 
 	ctx := context.Background()
 
-	client := db.GetBigtableClient(ctx, config)
+	client := db.GetBigtableClient(ctx, testConfig)
 	defer func() {
 		if err := client.Close(); err != nil {
 			log.Fatalf("could not close client: %v", err)
 		}
 	}()
 
-	a := app.NewApp(config, client)
+	a := app.NewApp(testConfig, client)
 
 	// Create a WaitGroup, which waits for a collection of goroutines to finish
 	var wg sync.WaitGroup
 
-	// Run the gRPC server
 	wg.Add(1)
 	go a.GrpcServer.Run()
 
-	// Wait blocks until the WaitGroup counter is zero.
-	wg.Wait()
+	serverAddress = fmt.Sprintf("localhost:%d", testConfig.GrpcPort)
+
+	// Collect the test code
+	code := m.Run()
+
+	// Kill the server
+	wg.Done()
+
+	// Exit the program
+	os.Exit(code)
 }

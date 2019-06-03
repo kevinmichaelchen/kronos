@@ -22,6 +22,9 @@ type Config struct {
 
 	// LoggingConfig configures how we do logging.
 	LoggingConfig logging.Config
+
+	BigtableProject  string
+	BigtableInstance string
 }
 
 func (c Config) String() string {
@@ -34,8 +37,10 @@ func (c Config) String() string {
 
 func LoadConfig() Config {
 	c := Config{
-		AppID:    uuid.Must(uuid.NewRandom()).String(),
-		GrpcPort: 8080,
+		AppID:            uuid.Must(uuid.NewRandom()).String(),
+		GrpcPort:         8080,
+		BigtableProject:  "my-project",
+		BigtableInstance: "my-instance",
 	}
 
 	flag.Int(flagForGrpcPort, c.GrpcPort, "port to serve gRPC on")
