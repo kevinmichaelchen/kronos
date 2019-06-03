@@ -14,11 +14,7 @@ func (s *Server) GetNumberOfLogins(ctx context.Context, in *proto.UserQuery) (*p
 	rowRange := bigtable.PrefixRange(in.UserID)
 
 	var rowCount int
-
 	var readOpts []bigtable.ReadOption
-
-	// Filter on the column family
-	//readOpts = append(readOpts, bigtable.RowFilter(bigtable.FamilyFilter(db.LoginFamily)))
 
 	err := tbl.ReadRows(ctx, rowRange, func(r bigtable.Row) bool {
 
@@ -56,7 +52,72 @@ func (s *Server) GetNumberOfLogins(ctx context.Context, in *proto.UserQuery) (*p
 }
 
 func (s *Server) GetUserSessionDuration(ctx context.Context, in *proto.UserQuery) (*proto.DurationResponse, error) {
+	// TODO in theory every heartbeat should equal 5 seconds
+	//  but some heartbeats might fail to send...
+	//  so we should only increment the duration if the
+	//  current heartbeat's time is 5 seconds greater than the previous one's.
+	//  Yes, this means when iterating we have to store the previous heartbeat.
+
+	client := s.DatabaseClient
+	tbl := client.Open(db.HeartbeatsTable)
+
+	prefix := in.UserID
+
+	rowRange := bigtable.PrefixRange(prefix)
+
+	var rowCount int
+	var readOpts []bigtable.ReadOption
+
+	readOpts = append(readOpts, bigtable.RowFilter(bigtable.FamilyFilter(db.HeartbeatsFamily)))
+
+	var internalError error
+
+	err := tbl.ReadRows(ctx, rowRange, func(r bigtable.Row) bool {
+
+		rowKey, err := getHeartbeatRowKeyFromString(r.Key())
+		if err != nil {
+			internalError = err
+			return false
+		}
+
+		if in.Start != 0 {
+			if rowKey.IsBefore(in.Start) {
+				return true
+			}
+		}
+
+		if in.End != 0 {
+			if rowKey.IsAfter(in.End) {
+				return false
+			}
+		}
+
+		log.Infof("Reading columns in row: %s", r.Key())
+		rowCount += 1
+
+		// The first one is most recent!
+		rowMap := map[string][]bigtable.ReadItem(r)
+
+		for family := range rowMap {
+			readItems := rowMap[family]
+			for _, readItem := range readItems {
+				log.Infof("Reading col / time / value: %s / %s / %s",
+					readItem.Column, readItem.Timestamp.Time(), string(readItem.Value))
+			}
+		}
+
+		return true // keep going
+	}, readOpts...)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if internalError != nil {
+		return nil, internalError
+	}
+
 	return &proto.DurationResponse{
-		DurationMs: 0,
+		DurationMs: int64(rowCount * 5),
 	}, nil
 }

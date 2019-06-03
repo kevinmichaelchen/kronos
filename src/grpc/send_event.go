@@ -8,6 +8,7 @@ import (
 	proto "github.com/IrisVR/kronos/pb"
 	log "github.com/sirupsen/logrus"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -82,6 +83,31 @@ func reverseString(s string) string {
 		runes[i], runes[j] = runes[j], runes[i]
 	}
 	return string(runes)
+}
+
+type HeartbeatRowKey struct {
+	UserID string
+	Time   int64
+}
+
+func (r *HeartbeatRowKey) IsAfter(epochMS int64) bool {
+	return r.Time >= epochMS
+}
+
+func (r *HeartbeatRowKey) IsBefore(epochMS int64) bool {
+	return r.Time <= epochMS
+}
+
+func getHeartbeatRowKeyFromString(r string) (*HeartbeatRowKey, error) {
+	s := strings.Split(r, ":")
+	i, err := strconv.Atoi(s[1])
+	if err != nil {
+		return nil, err
+	}
+	return &HeartbeatRowKey{
+		UserID: s[0],
+		Time:   int64(i),
+	}, nil
 }
 
 func getLoginRowKey(userID string, epochMS int64) string {

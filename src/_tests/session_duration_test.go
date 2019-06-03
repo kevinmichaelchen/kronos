@@ -21,7 +21,9 @@ func Test_GetSessionDuration(t *testing.T) {
 
 	userID := uuid.Must(uuid.NewRandom()).String()
 
-	SkipConvey("When we send heartbeats", t, func(c C) {
+	heartbeatPeriodicity := 5
+
+	Convey("When we send heartbeats", t, func(c C) {
 		ctx := context.TODO()
 
 		// There should not be any session activity for this user yet
@@ -34,7 +36,7 @@ func Test_GetSessionDuration(t *testing.T) {
 		// Send heartbeat
 		_, err = client.SendHeartbeatEvent(ctx, &proto.Event{
 			UserID: userID,
-			TimeMs: 1559520445750,
+			TimeMs: 10000,
 			Properties: map[string]string{
 				"initial": "true",
 			},
@@ -44,6 +46,7 @@ func Test_GetSessionDuration(t *testing.T) {
 		// Session activity should still be 0
 		res, err = client.GetUserSessionDuration(ctx, &proto.UserQuery{
 			UserID: userID,
+			Start:  15000,
 		})
 		So(err, ShouldBeNil)
 		So(res.DurationMs, ShouldEqual, 0)
@@ -51,20 +54,15 @@ func Test_GetSessionDuration(t *testing.T) {
 		// Send heartbeat
 		_, err = client.SendHeartbeatEvent(ctx, &proto.Event{
 			UserID: userID,
-			TimeMs: 1559520445755,
+			TimeMs: 20000,
 		})
 		So(err, ShouldBeNil)
 
 		res, err = client.GetUserSessionDuration(ctx, &proto.UserQuery{
 			UserID: userID,
+			Start:  15000,
 		})
 		So(err, ShouldBeNil)
-		So(res.DurationMs, ShouldEqual, 5)
-
-		// TODO in theory every heartbeat should equal 5 seconds
-		//  but some heartbeats might fail to send...
-		//  so we should only increment the duration if the
-		//  current heartbeat's time is 5 seconds greater than the previous one's.
-		//  Yes, this means when iterating we have to store the previous heartbeat.
+		So(res.DurationMs, ShouldEqual, 1*heartbeatPeriodicity)
 	})
 }
