@@ -43,12 +43,18 @@ build-tables:
 	  ~/go/bin/cbt \
 	  -project=${BIGTABLE_PROJECT} \
 	  -instance=${BIGTABLE_INSTANCE} \
-	  createtable mytable
+	  createtable logins
 	env \
 	  BIGTABLE_EMULATOR_HOST=${BIGTABLE_EMULATOR_HOST} \
 	  ~/go/bin/cbt \
 	  -project=${BIGTABLE_PROJECT} \
 	  -instance=${BIGTABLE_INSTANCE} \
-	  createfamily mytable event
+	  createtable heartbeats
+	env \
+	  BIGTABLE_EMULATOR_HOST=${BIGTABLE_EMULATOR_HOST} \
+	  ~/go/bin/cbt \
+	  -project=${BIGTABLE_PROJECT} \
+	  -instance=${BIGTABLE_INSTANCE} \
+	  createfamily logins f78002f4-873d-4e79-bf13-0453c4951312
 
 include makefiles/*.mk

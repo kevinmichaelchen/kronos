@@ -39,11 +39,22 @@ make build-tables
 ```
 
 ### Hitting the gRPC API
-#### Sending an event
+#### Sending a login event
 ```
 grpcurl -v -plaintext \
-  -d '{"event": "login", "userID": "f78002f4-873d-4e79-bf13-0453c4951312", "properties": {"a": "b"}}' \
-  :8080 proto.EventService/SendEvent
+  -d '{"userID": "f78002f4-873d-4e79-bf13-0453c4951312", "timeMs": 1559520445749, "properties": {"a": "b"}}' \
+  :8080 proto.EventService/SendLoginEvent
+
+grpcurl -v -plaintext \
+  -d '{"userID": "f78002f4-873d-4e79-bf13-0453c4951312", "timeMs": 1559520445750, "properties": {"a": "b"}}' \
+  :8080 proto.EventService/SendLoginEvent
+```
+
+#### Counting logins for user
+```
+grpcurl -v -plaintext \
+  -d '{"userID": "f78002f4-873d-4e79-bf13-0453c4951312", "start": 1559520445749, "end": 1559520640198}' \
+  :8080 proto.EventService/GetNumberOfLogins
 ```
 
 #### Reading all events (debugging only)

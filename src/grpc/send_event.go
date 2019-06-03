@@ -41,6 +41,7 @@ func (s *Server) writeEvent(ctx context.Context, tableName string, in *proto.Eve
 
 	eventTime := getTime(in.TimeMs)
 	rowKey := getLoginRowKey(in.UserID, in.TimeMs)
+	// TODO the emulator complains if you make column families on the fly... why??? does the real CBT do this?
 	columnFamily := in.UserID
 	columnName := "value"
 
