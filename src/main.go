@@ -21,7 +21,14 @@ func main() {
 		}
 	}()
 
-	a := app.NewApp(config, client)
+	adminClient := db.GetBigtableAdminClient(ctx, config)
+	defer func() {
+		if err := adminClient.Close(); err != nil {
+			log.Fatalf("could not close client: %v", err)
+		}
+	}()
+
+	a := app.NewApp(config, client, adminClient)
 
 	// Create a WaitGroup, which waits for a collection of goroutines to finish
 	var wg sync.WaitGroup

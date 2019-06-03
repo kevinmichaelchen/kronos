@@ -16,3 +16,13 @@ func GetBigtableClient(ctx context.Context, config configuration.Config) *bigtab
 	}
 	return client
 }
+
+func GetBigtableAdminClient(ctx context.Context, config configuration.Config) *bigtable.AdminClient {
+	project := config.BigtableProject
+	instance := config.BigtableInstance
+	client, err := bigtable.NewAdminClient(ctx, project, instance)
+	if err != nil {
+		log.Fatalf("could not create Bigtable admin client: %v", err)
+	}
+	return client
+}

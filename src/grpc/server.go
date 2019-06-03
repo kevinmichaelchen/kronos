@@ -24,15 +24,18 @@ import (
 type Server struct {
 	Port           int
 	DatabaseClient *bigtable.Client
+	AdminClient    *bigtable.AdminClient
 }
 
 func NewServer(
 	config configuration.Config,
 	databaseClient *bigtable.Client,
+	adminClient *bigtable.AdminClient,
 ) Server {
 	return Server{
 		Port:           config.GrpcPort,
 		DatabaseClient: databaseClient,
+		AdminClient:    adminClient,
 	}
 }
 

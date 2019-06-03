@@ -24,9 +24,6 @@ func (s *Server) readAllRows(ctx context.Context, tblName string) error {
 
 	var readOpts []bigtable.ReadOption
 
-	// TODO should we use a family filter?
-	//readOpts = append(readOpts, bigtable.RowFilter(bigtable.FamilyFilter("links")))
-
 	err := tbl.ReadRows(ctx, rowRange, func(r bigtable.Row) bool {
 
 		rowCount += 1

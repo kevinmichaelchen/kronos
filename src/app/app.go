@@ -13,11 +13,13 @@ type App struct {
 
 func NewApp(
 	config configuration.Config,
-	databaseClient *bigtable.Client) *App {
+	databaseClient *bigtable.Client,
+	adminClient *bigtable.AdminClient) *App {
 
 	grpcServer := grpc.NewServer(
 		config,
 		databaseClient,
+		adminClient,
 	)
 
 	return &App{

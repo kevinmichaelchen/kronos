@@ -16,6 +16,7 @@ const (
 )
 
 func (s *Server) SendHeartbeatEvent(ctx context.Context, in *proto.Event) (*proto.Empty, error) {
+	// TODO validate event, e.g.,v4 uuid
 	if err := s.writeEvent(ctx, heartbeatsTable, in); err != nil {
 		return nil, err
 	}
@@ -26,6 +27,7 @@ func (s *Server) SendHeartbeatEvent(ctx context.Context, in *proto.Event) (*prot
 }
 
 func (s *Server) SendLoginEvent(ctx context.Context, in *proto.Event) (*proto.Empty, error) {
+	// TODO validate event, e.g.,v4 uuid
 	if err := s.writeEvent(ctx, loginTable, in); err != nil {
 		return nil, err
 	}
@@ -41,9 +43,27 @@ func (s *Server) writeEvent(ctx context.Context, tableName string, in *proto.Eve
 
 	eventTime := getTime(in.TimeMs)
 	rowKey := getLoginRowKey(in.UserID, in.TimeMs)
-	// TODO the emulator complains if you make column families on the fly... why??? does the real CBT do this?
 	columnFamily := in.UserID
 	columnName := "value"
+
+	// Create the column family
+	var familyExists bool
+	if tableInfo, err := s.AdminClient.TableInfo(ctx, tableName); err != nil {
+		return err
+	} else {
+		familyInfos := tableInfo.FamilyInfos
+		for _, familyInfo := range familyInfos {
+			if familyInfo.Name == columnFamily {
+				familyExists = true
+				break
+			}
+		}
+	}
+	if !familyExists {
+		if err := s.AdminClient.CreateColumnFamily(ctx, tableName, columnFamily); err != nil {
+			return err
+		}
+	}
 
 	mut := bigtable.NewMutation()
 	mut.Set(columnFamily, columnName, bigtable.Time(eventTime), []byte("1"))
