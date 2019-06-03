@@ -4,8 +4,9 @@ package proto;
 
 message Event {
     string userID = 1;
-    int64 timeMs = 2;
-    map<string, string> properties = 3;
+    string sessionID = 2;
+    int64 timeMs = 3;
+    map<string, string> properties = 4;
 }
 
 message Empty {}
