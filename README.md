@@ -19,6 +19,14 @@ and is an ideal source for MapReduce operations.
 - Using [Cloud Bigtable](https://cloud.google.com/bigtable/docs/overview) means Google handles
 upgrades, restarts, durability, auto-scaling, and cross-regional replication for us. 
 
+### What queries have been tested so far?
+
+
+### Concerns
+- How do we stop malicious actors from sending fabricated events? We'd probably use an API key similar to what Segment does.
+- How do we migrate existing data from Segment into Cloud Bigtable?
+- How do we port old Prospect builds to forward analytics events to this service instead of Segment?
+
 ## Running
 ### Start the emulator
 We use the [gcloud emulator](https://cloud.google.com/sdk/gcloud/reference/beta/emulators/bigtable/)
