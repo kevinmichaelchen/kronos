@@ -3,27 +3,27 @@ package grpc
 import (
 	"cloud.google.com/go/bigtable"
 	"context"
+	"github.com/IrisVR/kronos/db"
 	proto "github.com/IrisVR/kronos/pb"
 	log "github.com/sirupsen/logrus"
 )
 
 func (s *Server) GetNumberOfLogins(ctx context.Context, in *proto.UserQuery) (*proto.CountResponse, error) {
 	client := s.DatabaseClient
-	tbl := client.Open(loginTable)
-	rowRange := bigtable.PrefixRange("")
+	tbl := client.Open(db.LoginTable)
+	rowRange := bigtable.PrefixRange(in.UserID)
 
 	var rowCount int
 
 	var readOpts []bigtable.ReadOption
 
 	// Filter on the column family
-	readOpts = append(readOpts, bigtable.RowFilter(bigtable.FamilyFilter(in.UserID)))
+	//readOpts = append(readOpts, bigtable.RowFilter(bigtable.FamilyFilter(db.LoginFamily)))
 
 	err := tbl.ReadRows(ctx, rowRange, func(r bigtable.Row) bool {
 
-		rowCount += 1
-
 		log.Infof("Reading columns in row: %s", r.Key())
+		rowCount += 1
 
 		// The first one is most recent!
 		rowMap := map[string][]bigtable.ReadItem(r)

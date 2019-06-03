@@ -11,14 +11,15 @@ import (
 	"time"
 )
 
-const (
-	loginTable      = "logins"
-	heartbeatsTable = "heartbeats"
-)
+// TODO validate event, e.g.,v4 uuid
 
 func (s *Server) SendHeartbeatEvent(ctx context.Context, in *proto.Event) (*proto.Empty, error) {
-	// TODO validate event, e.g.,v4 uuid
-	if err := s.writeEvent(ctx, heartbeatsTable, in); err != nil {
+	rowKey := getHeartbeatRowKey(in.UserID, in.TimeMs)
+	// Column family cannot be empty string
+	columnFamily := db.HeartbeatsFamily
+	eventTime := bigtable.Time(getTime(in.TimeMs))
+
+	if err := s.writeEvent(ctx, db.HeartbeatsTable, rowKey, columnFamily, eventTime); err != nil {
 		return nil, err
 	}
 
@@ -28,8 +29,12 @@ func (s *Server) SendHeartbeatEvent(ctx context.Context, in *proto.Event) (*prot
 }
 
 func (s *Server) SendLoginEvent(ctx context.Context, in *proto.Event) (*proto.Empty, error) {
-	// TODO validate event, e.g.,v4 uuid
-	if err := s.writeEvent(ctx, loginTable, in); err != nil {
+	rowKey := getLoginRowKey(in.UserID, in.TimeMs)
+	// Column family cannot be empty string
+	columnFamily := db.LoginFamily
+	eventTime := bigtable.Time(getTime(in.TimeMs))
+
+	if err := s.writeEvent(ctx, db.LoginTable, rowKey, columnFamily, eventTime); err != nil {
 		return nil, err
 	}
 
@@ -38,22 +43,22 @@ func (s *Server) SendLoginEvent(ctx context.Context, in *proto.Event) (*proto.Em
 	return &proto.Empty{}, nil
 }
 
-func (s *Server) writeEvent(ctx context.Context, tableName string, in *proto.Event) error {
+func (s *Server) writeEvent(
+	ctx context.Context,
+	tableName, rowKey, columnFamily string,
+	t bigtable.Timestamp,
+) error {
 	client := s.DatabaseClient
-	tbl := client.Open(tableName)
-
-	eventTime := getTime(in.TimeMs)
-	rowKey := getLoginRowKey(in.UserID, in.TimeMs)
-	columnFamily := in.UserID
 	columnName := "value"
 
-	// Create the column family
+	tbl := client.Open(tableName)
+
 	if err := db.EnsureFamilyExists(ctx, s.AdminClient, tableName, columnFamily); err != nil {
 		return err
 	}
 
 	mut := bigtable.NewMutation()
-	mut.Set(columnFamily, columnName, bigtable.Time(eventTime), []byte("1"))
+	mut.Set(columnFamily, columnName, t, []byte("1"))
 	return tbl.Apply(ctx, rowKey, mut)
 }
 
@@ -63,12 +68,26 @@ func getTime(epochMs int64) time.Time {
 	return time.Unix(s, ns)
 }
 
-func reverseTimestamp(epochMs int64) string {
-	// TODO actually reverse it.
-	//  for now we don't care about hotspotting
+func stringifyTimestamp(epochMs int64) string {
 	return strconv.Itoa(int(epochMs))
+}
+
+func reverseTimestamp(epochMs int64) string {
+	return reverseString(stringifyTimestamp(epochMs))
+}
+
+func reverseString(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
 }
 
 func getLoginRowKey(userID string, epochMS int64) string {
 	return fmt.Sprintf("%s:%s", userID, reverseTimestamp(epochMS))
+}
+
+func getHeartbeatRowKey(userID string, epochMS int64) string {
+	return fmt.Sprintf("%s:%s", userID, stringifyTimestamp(epochMS))
 }

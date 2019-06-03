@@ -36,19 +36,4 @@ run:
 	  LOG_LEVEL=${LOG_LEVEL} \
 	  ./bin/app
 
-.PHONY: build-tables
-build-tables:
-	env \
-	  BIGTABLE_EMULATOR_HOST=${BIGTABLE_EMULATOR_HOST} \
-	  ~/go/bin/cbt \
-	  -project=${BIGTABLE_PROJECT} \
-	  -instance=${BIGTABLE_INSTANCE} \
-	  createtable logins
-	env \
-	  BIGTABLE_EMULATOR_HOST=${BIGTABLE_EMULATOR_HOST} \
-	  ~/go/bin/cbt \
-	  -project=${BIGTABLE_PROJECT} \
-	  -instance=${BIGTABLE_INSTANCE} \
-	  createtable heartbeats
-
 include makefiles/*.mk

@@ -2,8 +2,11 @@ package app
 
 import (
 	"cloud.google.com/go/bigtable"
+	"context"
 	"github.com/IrisVR/kronos/configuration"
+	"github.com/IrisVR/kronos/db"
 	"github.com/IrisVR/kronos/grpc"
+	log "github.com/sirupsen/logrus"
 )
 
 type App struct {
@@ -12,6 +15,7 @@ type App struct {
 }
 
 func NewApp(
+	ctx context.Context,
 	config configuration.Config,
 	databaseClient *bigtable.Client,
 	adminClient *bigtable.AdminClient) *App {
@@ -21,6 +25,10 @@ func NewApp(
 		databaseClient,
 		adminClient,
 	)
+
+	if err := db.EnsureAllTablesExist(ctx, adminClient); err != nil {
+		log.Fatalf("Could not create tables: %v", err)
+	}
 
 	return &App{
 		DatabaseClient: databaseClient,

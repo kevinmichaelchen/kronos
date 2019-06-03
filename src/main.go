@@ -28,7 +28,7 @@ func main() {
 		}
 	}()
 
-	a := app.NewApp(config, client, adminClient)
+	a := app.NewApp(ctx, config, client, adminClient)
 
 	// Create a WaitGroup, which waits for a collection of goroutines to finish
 	var wg sync.WaitGroup

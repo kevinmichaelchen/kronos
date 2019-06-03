@@ -34,7 +34,7 @@ func TestMain(m *testing.M) {
 		}
 	}()
 
-	a := app.NewApp(testConfig, client, adminClient)
+	a := app.NewApp(ctx, testConfig, client, adminClient)
 
 	// Create a WaitGroup, which waits for a collection of goroutines to finish
 	var wg sync.WaitGroup

@@ -1,5 +1,4 @@
 # kronos
-
 This project provides a gRPC API for analytics.
 
 ## FAQ
@@ -21,21 +20,22 @@ and is an ideal source for MapReduce operations.
 upgrades, restarts, durability, auto-scaling, and cross-regional replication for us. 
 
 ## Running
+### Start the emulator
 We use the [gcloud emulator](https://cloud.google.com/sdk/gcloud/reference/beta/emulators/bigtable/)
 to run locally.
 ```
 # In one tab
 gcloud beta emulators bigtable start
+```
 
-# In a separate tab
+### Run tests
+```
+make testv
+```
+
+### Run the app
+```
 make
-```
-
-### Creating tables (run each time emulator restarts)
-```
-go get -u cloud.google.com/go/bigtable/cmd/cbt
-
-make build-tables
 ```
 
 ### Hitting the gRPC API

@@ -3,12 +3,13 @@ package grpc
 import (
 	"cloud.google.com/go/bigtable"
 	"context"
+	"github.com/IrisVR/kronos/db"
 	proto "github.com/IrisVR/kronos/pb"
 	log "github.com/sirupsen/logrus"
 )
 
 func (s *Server) ReadEvents(ctx context.Context, in *proto.Empty) (*proto.Empty, error) {
-	if err := s.readAllRows(ctx, loginTable); err != nil {
+	if err := s.readAllRows(ctx, db.LoginTable); err != nil {
 		return nil, err
 	}
 
