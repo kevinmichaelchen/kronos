@@ -4,6 +4,7 @@ import (
 	"cloud.google.com/go/bigtable"
 	"context"
 	"fmt"
+	"github.com/IrisVR/kronos/db"
 	proto "github.com/IrisVR/kronos/pb"
 	log "github.com/sirupsen/logrus"
 	"strconv"
@@ -47,22 +48,8 @@ func (s *Server) writeEvent(ctx context.Context, tableName string, in *proto.Eve
 	columnName := "value"
 
 	// Create the column family
-	var familyExists bool
-	if tableInfo, err := s.AdminClient.TableInfo(ctx, tableName); err != nil {
+	if err := db.EnsureFamilyExists(ctx, s.AdminClient, tableName, columnFamily); err != nil {
 		return err
-	} else {
-		familyInfos := tableInfo.FamilyInfos
-		for _, familyInfo := range familyInfos {
-			if familyInfo.Name == columnFamily {
-				familyExists = true
-				break
-			}
-		}
-	}
-	if !familyExists {
-		if err := s.AdminClient.CreateColumnFamily(ctx, tableName, columnFamily); err != nil {
-			return err
-		}
 	}
 
 	mut := bigtable.NewMutation()
