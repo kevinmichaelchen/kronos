@@ -1,6 +1,6 @@
 .PHONY: protoc
 protoc:
-	protoc -I $(SRC_DIR)/pb $(SRC_DIR)/pb/*.proto --go_out=plugins=grpc:./$(SRC_DIR)/pb
+	protoc -I internal/pb internal/pb/*.proto --go_out=plugins=grpc:./internal/pb
 
 .PHONY: install-proto
 install-proto:

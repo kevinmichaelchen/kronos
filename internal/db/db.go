@@ -1,9 +1,10 @@
 package db
 
 import (
-	"cloud.google.com/go/bigtable"
 	"context"
-	"github.com/IrisVR/kronos/configuration"
+
+	"cloud.google.com/go/bigtable"
+	"github.com/IrisVR/kronos/internal/configuration"
 	log "github.com/sirupsen/logrus"
 )
 

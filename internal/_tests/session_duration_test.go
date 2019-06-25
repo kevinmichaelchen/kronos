@@ -2,11 +2,12 @@ package _tests
 
 import (
 	"context"
-	proto "github.com/IrisVR/kronos/pb"
+	"testing"
+
+	proto "github.com/IrisVR/kronos/internal/pb"
 	"github.com/google/uuid"
 	. "github.com/smartystreets/goconvey/convey"
 	"google.golang.org/grpc"
-	"testing"
 )
 
 func Test_GetSessionDuration(t *testing.T) {

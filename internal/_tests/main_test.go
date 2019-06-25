@@ -3,13 +3,14 @@ package _tests
 import (
 	"context"
 	"fmt"
-	"github.com/IrisVR/kronos/app"
-	"github.com/IrisVR/kronos/configuration"
-	"github.com/IrisVR/kronos/db"
-	log "github.com/sirupsen/logrus"
 	"os"
 	"sync"
 	"testing"
+
+	"github.com/IrisVR/kronos/internal/app"
+	"github.com/IrisVR/kronos/internal/configuration"
+	"github.com/IrisVR/kronos/internal/db"
+	log "github.com/sirupsen/logrus"
 )
 
 var testConfig configuration.Config

@@ -1,10 +1,11 @@
 package grpc
 
 import (
-	"cloud.google.com/go/bigtable"
 	"context"
-	"github.com/IrisVR/kronos/db"
-	proto "github.com/IrisVR/kronos/pb"
+
+	"cloud.google.com/go/bigtable"
+	"github.com/IrisVR/kronos/internal/db"
+	proto "github.com/IrisVR/kronos/internal/pb"
 	log "github.com/sirupsen/logrus"
 )
 

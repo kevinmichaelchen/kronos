@@ -1,11 +1,12 @@
 package app
 
 import (
-	"cloud.google.com/go/bigtable"
 	"context"
-	"github.com/IrisVR/kronos/configuration"
-	"github.com/IrisVR/kronos/db"
-	"github.com/IrisVR/kronos/grpc"
+
+	"cloud.google.com/go/bigtable"
+	"github.com/IrisVR/kronos/internal/configuration"
+	"github.com/IrisVR/kronos/internal/db"
+	"github.com/IrisVR/kronos/internal/grpc"
 	log "github.com/sirupsen/logrus"
 )
 

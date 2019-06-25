@@ -1,10 +1,11 @@
 package grpc
 
 import (
-	"cloud.google.com/go/bigtable"
 	"fmt"
-	"github.com/IrisVR/kronos/configuration"
-	proto "github.com/IrisVR/kronos/pb"
+
+	"cloud.google.com/go/bigtable"
+	"github.com/IrisVR/kronos/internal/configuration"
+	proto "github.com/IrisVR/kronos/internal/pb"
 	"github.com/IrisVR/nucleus/kontext"
 	"github.com/getsentry/raven-go"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -14,10 +15,11 @@ import (
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"google.golang.org/grpc/codes"
 
+	"net"
+
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"net"
 )
 
 // Server represents a gRPC server. It handles all gRPC calls.

@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"encoding/json"
+
 	"github.com/IrisVR/nucleus/logging"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"

@@ -18,6 +18,7 @@ that can scale to billions of rows, supports high read and write throughput at l
 and is an ideal source for MapReduce operations.
 - Using [Cloud Bigtable](https://cloud.google.com/bigtable/docs/overview) means Google handles
 upgrades, restarts, durability, auto-scaling, and cross-regional replication for us. 
+- Bigtable pairs well with Dataflow to form a [streaming analytics pipeline](https://cloud.google.com/solutions/big-data/stream-analytics/).
 
 ### What queries have been tested so far?
 

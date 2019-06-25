@@ -1,15 +1,16 @@
 package grpc
 
 import (
-	"cloud.google.com/go/bigtable"
 	"context"
 	"fmt"
-	"github.com/IrisVR/kronos/db"
-	proto "github.com/IrisVR/kronos/pb"
-	log "github.com/sirupsen/logrus"
 	"strconv"
 	"strings"
 	"time"
+
+	"cloud.google.com/go/bigtable"
+	"github.com/IrisVR/kronos/internal/db"
+	proto "github.com/IrisVR/kronos/internal/pb"
+	log "github.com/sirupsen/logrus"
 )
 
 // TODO validate event, e.g.,v4 uuid

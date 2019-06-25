@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"github.com/IrisVR/kronos/app"
-	"github.com/IrisVR/kronos/configuration"
-	"github.com/IrisVR/kronos/db"
-	log "github.com/sirupsen/logrus"
 	"sync"
+
+	"github.com/IrisVR/kronos/internal/app"
+	"github.com/IrisVR/kronos/internal/configuration"
+	"github.com/IrisVR/kronos/internal/db"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
