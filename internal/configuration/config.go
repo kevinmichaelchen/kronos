@@ -38,7 +38,7 @@ func (c Config) String() string {
 
 func LoadConfig() Config {
 	c := Config{
-		AppID:            uuid.Must(uuid.NewRandom()).String(),
+		AppID:            uuid.New().String(),
 		GrpcPort:         8080,
 		BigtableProject:  "my-project",
 		BigtableInstance: "my-instance",

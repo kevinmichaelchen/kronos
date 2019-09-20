@@ -7,18 +7,11 @@ import (
 	"github.com/IrisVR/kronos/internal/configuration"
 	proto "github.com/IrisVR/kronos/internal/pb"
 	"github.com/IrisVR/nucleus/kontext"
-	"github.com/getsentry/raven-go"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"google.golang.org/grpc/codes"
 
 	"net"
 
 	"github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -91,43 +84,7 @@ func (s *Server) Run() {
 	}
 	logrus.Printf("Starting gRPC server on %s...\n", address)
 
-	// Logrus entry is used, allowing pre-definition of certain fields by the user.
-	logrusEntry := logrus.WithFields(logrus.Fields{})
-
-	// Shared options for the logger, with a custom gRPC code to log level function.
-	logrusOpts := []grpc_logrus.Option{
-		grpc_logrus.WithLevels(customCodeToLogLevel),
-	}
-
-	// Make sure that log statements internal to gRPC library are logged using the logrus Logger as well.
-	//grpc_logrus.ReplaceGrpcLogger(logrusEntry)
-
-	recoveryOpts := []grpc_recovery.Option{
-		grpc_recovery.WithRecoveryHandler(func(p interface{}) (err error) {
-			logrus.Errorf("Got error / panic: %v", p)
-			if s, ok := p.(string); ok {
-				//tagsMap := kontext.SentryTags(ctx)
-				var tagsMap map[string]string
-				raven.CaptureMessage(s, tagsMap)
-			}
-			return nil
-		}),
-	}
-
-	server := grpc.NewServer(
-		grpc_middleware.WithUnaryServerChain(
-			grpc_opentracing.UnaryServerInterceptor(),
-			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_logrus.UnaryServerInterceptor(logrusEntry, logrusOpts...),
-			kontext.UnaryServerInterceptor(),
-		),
-		grpc_middleware.WithStreamServerChain(
-			grpc_opentracing.StreamServerInterceptor(),
-			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_logrus.StreamServerInterceptor(logrusEntry, logrusOpts...),
-			grpc_recovery.StreamServerInterceptor(recoveryOpts...),
-		),
-	)
+	server := kontext.NewServer()
 
 	// Register our services
 	proto.RegisterEventServiceServer(server, s)

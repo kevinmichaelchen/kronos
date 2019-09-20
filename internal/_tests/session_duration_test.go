@@ -20,7 +20,7 @@ func Test_GetSessionDuration(t *testing.T) {
 	}
 	client := proto.NewEventServiceClient(connection)
 
-	userID := uuid.Must(uuid.NewRandom()).String()
+	userID := uuid.New().String()
 
 	heartbeatPeriodicity := 5
 

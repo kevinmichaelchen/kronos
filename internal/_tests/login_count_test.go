@@ -20,7 +20,7 @@ func Test_GetLoginCount(t *testing.T) {
 	}
 	client := proto.NewEventServiceClient(connection)
 
-	userID := uuid.Must(uuid.NewRandom()).String()
+	userID := uuid.New().String()
 
 	Convey("When we create login events", t, func(c C) {
 		ctx := context.TODO()
